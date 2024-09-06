@@ -34,7 +34,7 @@ jobs:
       - uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
         with:
           path: "${{ matrix.app-path }}"
-          name: "${{ matrix.app-path }}"
+          image-name: "${{ matrix.app-path }}"
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           registry-username: ${{ github.actor }}
