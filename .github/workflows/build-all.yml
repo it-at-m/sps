@@ -2,7 +2,7 @@ name: build all
 
 on: [push]
 jobs:
-  build-maven:
+  build:
     runs-on: ubuntu-latest
     env:
       TZ: Europe/Berlin # timezone
@@ -17,24 +17,16 @@ jobs:
           - app-path: sps-frontend
             language: node
     steps:
-      - uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
-        if: ${{ matrix.language == 'node' }}
+      - if: ${{ matrix.language == 'node' }}
+        uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
         with:
           app-path: "${{ matrix.app-path }}"
-      - uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
-        if: ${{ matrix.language == 'java' }}
+      - if: ${{ matrix.language == 'java' }}
+        uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
         with:
           app-path: "${{ matrix.app-path }}"
-
-  build-image:
-    runs-on: ubuntu-latest
-    needs: build-maven
-    strategy:
-      matrix:
-        include: ${{ fromJSON(needs.build-maven.outputs.matrix) }}
-    if: github.ref == 'refs/heads/test-pip'
-    steps:
-      - uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
+      - if: github.ref == 'refs/heads/test-pip'
+        uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
         with:
           path: "${{  matrix.app-path }}"
           image-name: "${{  matrix.app-path }}"
