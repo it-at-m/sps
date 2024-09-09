@@ -7,6 +7,7 @@ jobs:
     env:
       TZ: Europe/Berlin # timezone
     strategy:
+      fail-fast: false
       matrix:
         include:
           - app-path: sps-backend
