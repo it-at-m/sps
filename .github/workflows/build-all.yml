@@ -13,15 +13,14 @@ jobs:
             language: java
           - app-path: sps-frontend
             language: node
+    defaults:
+      run:
+        working-directory: ./${{matrix.app-path}}
     steps:
       - uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
         if: ${{ matrix.language == 'node' }}
-        with:
-          app-path: "${{ matrix.app-path }}"
       - uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
         if: ${{ matrix.language == 'java' }}
-        with:
-          app-path: "${{ matrix.app-path }}"
 
   build-image:
     runs-on: ubuntu-latest
