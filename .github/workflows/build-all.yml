@@ -7,7 +7,7 @@ jobs:
     env:
       TZ: Europe/Berlin # timezone
     outputs:
-      app-path: ${{ matrix.app-path }}
+      matrix: ${{ toJSON(matrix) }}
     strategy:
       fail-fast: false
       matrix:
@@ -29,12 +29,14 @@ jobs:
   build-image:
     runs-on: ubuntu-latest
     needs: build-maven
+    strategy:
+      matrix: ${{ fromJSON(needs.build-maven.outputs) }}
     if: github.ref == 'refs/heads/test-pip'
     steps:
       - uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
         with:
-          path: "${{ needs.build-maven.outputs.app-path }}"
-          image-name: "${{ needs.build-maven.outputs.app-path }}"
+          path: "${{  matrix.app-path }}"
+          image-name: "${{  matrix.app-path }}"
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           registry-username: ${{ github.actor }}
