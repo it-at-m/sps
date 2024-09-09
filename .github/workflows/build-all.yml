@@ -1,6 +1,6 @@
 name: build all
 
-on:   [push]
+on: [push]
 jobs:
   build-maven:
     runs-on: ubuntu-latest
@@ -8,16 +8,20 @@ jobs:
       TZ: Europe/Berlin # timezone
     strategy:
       matrix:
-        include: 
+        include:
           - app-path: sps-backend
-            enable-node: false
+            language: java
           - app-path: sps-frontend
-            enable-node: true
+            language: node
     steps:
-      - uses: it-at-m/.github/.github/actions/action-maven-node-build@pipeline-feedback
+      - uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
+        if: ${{ matrix.language == node }}
         with:
           app-path: "${{ matrix.app-path }}"
-          enable-node: ${{ matrix.app-path }}
+      - uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
+        if: ${{ matrix.language == java }}
+        with:
+          app-path: "${{ matrix.app-path }}"
 
   build-image:
     runs-on: ubuntu-latest
@@ -25,11 +29,9 @@ jobs:
     if: github.ref == 'refs/heads/test-pip'
     strategy:
       matrix:
-        include: 
+        include:
           - app-path: sps-backend
-            enable-node: false
           - app-path: sps-frontend
-            enable-node: true
     steps:
       - uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
         with:
