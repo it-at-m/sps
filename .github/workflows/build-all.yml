@@ -19,6 +19,7 @@ jobs:
     steps:
       - uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
         if: ${{ matrix.language == 'node' }}
+        working-directory: ./${{matrix.app-path}}
       - uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
         if: ${{ matrix.language == 'java' }}
 
