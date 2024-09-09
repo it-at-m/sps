@@ -6,6 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TZ: Europe/Berlin # timezone
+    outputs:
+      app-path: ${{ matrix.app-path }}
     strategy:
       fail-fast: false
       matrix:
@@ -28,16 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-maven
     if: github.ref == 'refs/heads/test-pip'
-    strategy:
-      matrix:
-        include:
-          - app-path: sps-backend
-          - app-path: sps-frontend
     steps:
       - uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
         with:
-          path: "${{ matrix.app-path }}"
-          image-name: "${{ matrix.app-path }}"
+          path: "${{ needs.build-maven.outputs.app-path }}"
+          image-name: "${{ needs.build-maven.outputs.app-path }}"
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           registry-username: ${{ github.actor }}
