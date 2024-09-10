@@ -17,10 +17,10 @@ jobs:
           - app-path: sps-frontend
             language: node
     steps:
-      - if:  ${{hashFiles(format('./{}/package.json', matrix.app-path))!=null}} 
+      - if:  ${{hashFiles(format('./{0}/package.json', matrix.app-path))!=null}} 
         uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
         with:
-          app-path:  ${{hashFiles(format('./{}/pom.xml', matrix.app-path))!=null}} 
+          app-path:  ${{hashFiles(format('./{0}/pom.xml', matrix.app-path))!=null}} 
       - if: ${{ matrix.language == 'java' }}
         uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
         with:
