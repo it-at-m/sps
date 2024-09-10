@@ -20,8 +20,8 @@ jobs:
       - if:  ${{hashFiles(format('./{0}/package.json', matrix.app-path))!=null}} 
         uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
         with:
-          app-path:  ${{hashFiles(format('./{0}/pom.xml', matrix.app-path))!=null}} 
-      - if: ${{ matrix.language == 'java' }}
+          app-path:  "${{ matrix.app-path }}"
+      - if:  ${{hashFiles(format('./{0}/package.json', matrix.app-path))!=null}} 
         uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
         with:
           app-path: "${{ matrix.app-path }}"
