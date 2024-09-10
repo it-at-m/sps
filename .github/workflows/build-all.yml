@@ -17,6 +17,7 @@ jobs:
           - app-path: sps-frontend
             language: node
     steps:
+      - uses: actions/checkout@v4
       - if:  ${{hashFiles(format('./{0}/package.json', matrix.app-path))!=null}} 
         uses: it-at-m/.github/.github/actions/action-npm-build@pipeline-feedback
         with:
