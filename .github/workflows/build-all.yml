@@ -28,12 +28,12 @@ jobs:
         uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
         with:
           app-path: "${{ matrix.app-path }}"
-      - run: echo "${{join(steps.*.outputs.artifact-name)}}"
       - if: github.ref == 'refs/heads/test-pip'
         uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
         with:
           path: "${{  matrix.app-path }}"
           image-name: "${{  matrix.app-path }}"
+          artifact-name: ${{join(steps.*.outputs.artifact-name)}}
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           registry-username: ${{ github.actor }}
