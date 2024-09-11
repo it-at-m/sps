@@ -28,7 +28,7 @@ jobs:
         uses: it-at-m/.github/.github/actions/action-maven-build@pipeline-feedback
         with:
           app-path: "${{ matrix.app-path }}"
-      - run: echo "${{toJSON(steps.*.outputs.artifact-name[0])}}"
+      - run: echo "${{toJSON(steps.*.outputs.artifact-name)[0]}}"
       - if: github.ref == 'refs/heads/test-pip'
         uses: it-at-m/.github/.github/actions/action-build-image@pipeline-feedback
         with:
