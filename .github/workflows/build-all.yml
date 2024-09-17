@@ -8,7 +8,7 @@ jobs:
       TZ: Europe/Berlin # timezone
     strategy:
       matrix:
-        include:
+        include: # hier müssen die Pfade angegeben werden
           - app-path: sps-backend
           - app-path: sps-frontend
     steps:
