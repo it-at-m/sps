@@ -88,4 +88,4 @@ jobs:
         with:
           artifact-name: ${{ needs.release.outputs.ARTIFACT_NAME }}
           tag-name: ${{ needs.release.outputs.VERSION }}
-          artifact-path: ""
+          # artifact-path: ""
