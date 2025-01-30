@@ -12,4 +12,4 @@ VitePress uses Vite under the hood. This means:
 
 ## Markdown-Centered
 
-So you can focus more on writing. Powered by MarkdownIt. Comes with many [built-in extensions](https://vitepress.dev/guide/markdown), and you can use Vue features in Markdown too!
+So you can focus more on writing. Powered by MarkdownIt. Comes withs many [built-in extensions](https://vitepress.dev/guide/markdown), and you can use Vue features in Markdown too!
