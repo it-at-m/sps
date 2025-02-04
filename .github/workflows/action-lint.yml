@@ -1,7 +1,5 @@
 name: reviewdog
-on: 
-  push: 
-   branches: []
+on:                             [pull_request]
 jobs:
   actionlint:
     permissions:
@@ -12,5 +10,4 @@ jobs:
               - uses: actions/checkout@v4
               - uses: reviewdog/action-actionlint@v1
                 with:
-                  level: info 
-                  github_token: ${{ github.token }}
+                  reporter: github-pr-review
