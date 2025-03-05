@@ -32,7 +32,7 @@ jobs:
       ARTIFACT_VERSION: ${{steps.npm_release.outputs.ARTIFACT_VERSION}}
     steps:
       - id: npm_release
-        uses: it-at-m/.github/.github/actions/action-npm-release@main
+        uses: it-at-m/.github/.github/actions/action-npm-release@test-actions
         with:
           app-path: ${{inputs.app-path}}
           releaseVersion: ${{inputs.release-version}}
