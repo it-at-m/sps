@@ -41,7 +41,7 @@ jobs:
           app-path: ${{inputs.app-path}}
           releaseVersion: ${{inputs.release-version}}
       - id: node
-        uses: it-at-m/.github/.github/actions/action-npm-build@fix-npm-release
+        uses: it-at-m/lhm-actions/.github/actions/action-npm-build@fix-npm-release
         with:
           app-path: "${{ inputs.app-path }}"
       - if: "${{ !inputs.skip-deployment }}"
