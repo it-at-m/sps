@@ -1,11 +1,11 @@
-name: npm-release
+name: Npm Release
 
-on:
+on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
     inputs:
-      releaseVersion:
+      release-version:
         type: choice
-        description: "Add node release."
+        description: "Select version increment type (follows Semantic Versioning)"
         required: true
         options:
           - patch
@@ -13,14 +13,18 @@ on:
           - major
       app-path:
         type: choice
-        description: Service-Name
+        description: "Select the node service to release"
         required: true
+        default: sps-frontend
         options:
-          - sps-frontend # todo: muss angepasst werden. eigenen Ordner verwenden
-
+          - sps-frontend # Add or modify frontend paths according to your project structure
+      skip-deployment:
+        default: true
+        type: boolean
+        description: "skip deployment to npm registry"
 jobs:
   release:
-    name: Release
+    name: release
     runs-on: ubuntu-latest
     permissions:
       contents: write # to be able to publish a GitHub release
@@ -29,63 +33,45 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
     outputs:
       ARTIFACT_NAME: ${{ steps.node.outputs.artifact-name }}
-      VERSION: ${{steps.node-release.outputs.VERSION}}
-    env: 
-     skipDeployment: false
+      ARTIFACT_VERSION: ${{steps.npm_release.outputs.ARTIFACT_VERSION}}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - id: npm_release
+        uses: it-at-m/lhm_actions/action-templates/actions/action-npm-release@0adbb607339cb32296289c8c319970b9ef2121cb # v1.0.2
         with:
-          node-version: "22"
-
-        
-      - id: node-release
-        name: Bump version and create git tag
-        working-directory: ./${{inputs.app-path}}
-        run: | 
-         NEW_VERSION=$(npm version ${{inputs.releaseVersion}}) || exit 1
-         echo "VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-         git config --global user.email "github-actions@github.com"
-         git config --global user.name "GitHub Actions"
-         git add package.json package-lock.json
-         git commit -m "Bump version to ${NEW_VERSION}" || exit 1
-         git tag "${NEW_VERSION}" || exit 1
-         git push && git push --tags || exit 1
+          app-path: ${{inputs.app-path}}
+          releaseVersion: ${{inputs.release-version}}
       - id: node
         uses: it-at-m/.github/.github/actions/action-npm-build@main
         with:
-          app-path:  "${{ inputs.app-path }}"
-      - if: "${{ !env.skipDeployment }}"
-        run: npm publish   # publish
+          app-path: "${{ inputs.app-path }}"
+      - if: "${{ !inputs.skip-deployment }}"
+        shell: bash
+        working-directory: ./${{inputs.app-path}}
+        run: npm --prefix ./${{ inputs.app-path }} publish --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # in der GitHub it-at-m Orga zentral hinterlegter Token
-  build-image:  
+          NODE_AUTH_TOKEN: ${{ inputs.npm-token }} # Centralized token in it-at-m GitHub organization
+
+  build-image:
     runs-on: ubuntu-latest
     needs: release
     steps:
-      - uses: it-at-m/.github/.github/actions/action-build-image@main
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@0adbb607339cb32296289c8c319970b9ef2121cb # v1.0.2
         with:
-          path: "${{  inputs.app-path }}"
-          image-name: "${{  inputs.app-path }}"
-          artifact-name:  ${{ needs.release.outputs.ARTIFACT_NAME }}
+          path: "${{ inputs.app-path }}"
+          image-name: "${{ inputs.app-path }}"
+          artifact-name: ${{ needs.release.outputs.ARTIFACT_NAME }}
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           registry-username: ${{ github.actor }}
           image-tags: |
-            type=semver,pattern={{version}},value=${{ needs.release.outputs.VERSION }}
- 
-  
-  
+            type=semver,pattern={{version}},value=${{ needs.release.outputs.ARTIFACT_VERSION }}
+            type=raw,value=latest
   create-github-release:
     needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub Release
         id: create_release
-        uses: it-at-m/.github/.github/actions/action-create-github-release@82_addWrapper
+        uses: it-at-m/lhm_actions/action-templates/actions/action-create-github-release@0adbb607339cb32296289c8c319970b9ef2121cb # v1.0.2
         with:
           artifact-name: ${{ needs.release.outputs.ARTIFACT_NAME }}
-          tag-name: ${{ needs.release.outputs.VERSION }}
-          # artifact-path: ""
+          tag-name: ${{ needs.release.outputs.ARTIFACT_VERSION }}
