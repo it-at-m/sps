@@ -1,7 +1,6 @@
 {
     "name": "beispielprojekt-frontend-frontend",
     "version": "0.1.59",
-    "private": true,
     "scripts": {
         "serve": "vite",
         "build": "eslint src --fix && vite build --out-dir dist && vue-tsc --noEmit --skipLibCheck",
