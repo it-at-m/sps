@@ -10,6 +10,15 @@
         "lint": "eslint src --fix",
         "type-check": "vue-tsc --noEmit --skipLibCheck"
     },
+    "repository": {
+  "type": "git",
+  "url": "https://github.com/it-at-m/sps"
+},
+"publishConfig": {
+  "access": "public",
+  "provenance": true
+},
+
     "dependencies": {
         "@muenchen/appswitcher-vue": "^1.0.0",
         "core-js": "^3.23.5",
