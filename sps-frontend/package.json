@@ -1,6 +1,6 @@
 {
     "name": "@muenchen/sps-test",
-    "version": "0.1.59",
+    "version": "0.1.60",
     "scripts": {
         "serve": "vite",
         "build": "eslint src --fix && vite build --out-dir dist && vue-tsc --noEmit --skipLibCheck",
@@ -11,14 +11,13 @@
         "type-check": "vue-tsc --noEmit --skipLibCheck"
     },
     "repository": {
-  "type": "git",
-  "url": "https://github.com/it-at-m/sps"
-},
-"publishConfig": {
-  "access": "public",
-  "provenance": true
-},
-
+        "type": "git",
+        "url": "https://github.com/it-at-m/sps"
+    },
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
+    },
     "dependencies": {
         "@muenchen/appswitcher-vue": "^1.0.0",
         "core-js": "^3.23.5",
