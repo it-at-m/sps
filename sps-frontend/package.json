@@ -1,5 +1,5 @@
 {
-    "name": "beispielprojekt-frontend-frontend",
+    "name": "@muenchen/sps-test",
     "version": "0.1.59",
     "scripts": {
         "serve": "vite",
