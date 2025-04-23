@@ -29,7 +29,7 @@ jobs:
       TZ: Europe/Berlin # timezone
     steps:
       - id: maven-release-step
-        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-release@feat/release-add-pr-option
+        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-release@bug/maven-release-fix-app-path
         with:
           use-pr: true
           java-version: 17
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download a single artifact
-        uses: it-at-m/lhm_actions/action-templates/actions/action-create-github-release@a4dd26733adc7d71b10fbd744ef355c01e4b7040 # v1.0.8
+        uses: it-at-m/lhm_actions/action-templates/actions/action-create-github-release@main
         with:
           artifact-name: ${{ needs.release-maven.outputs.ARTIFACT_NAME }}
           tag-name: ${{ needs.release-maven.outputs.MVN_ARTIFACT_ID }}-${{ github.event.inputs.releaseVersion }}
