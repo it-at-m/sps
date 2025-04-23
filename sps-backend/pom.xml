@@ -12,7 +12,7 @@
 
     <groupId>de.muenchen.beispielprojekt</groupId>
     <artifactId>beispielprojekt-backend</artifactId>
-    <version>0.0.77</version>
+    <version>0.0.78-SNAPSHOT</version>
     <name>beispielprojekt_backend</name>
 
 
@@ -275,7 +275,7 @@
     <scm>
         <connection>scm:git:https://github.com/it-at-m/sps.git</connection>
         <developerConnection>scm:git:https://github.com/it-at-m/sps.git</developerConnection>
-        <tag>beispielprojekt-backend-0.0.77</tag>
+        <tag>HEAD</tag>
     </scm>
 
 
