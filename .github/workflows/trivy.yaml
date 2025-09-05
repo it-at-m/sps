@@ -1,4 +1,4 @@
-name: build and test
+name: trivay
 
 on: [push]
 
@@ -9,5 +9,5 @@ jobs:
     steps:
 
 
-      - name: Advance Security Policy as Code
+      - name: trivay
         uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@add-trivy-action
