@@ -1,4 +1,4 @@
-# RefArch-Kickstarter-GUI1
+# RefArch-Kickstarter-GUI2
 
 ```
 npm install
