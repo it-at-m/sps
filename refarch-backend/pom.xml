@@ -6,12 +6,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.9</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <groupId>de.muenchen.refarch</groupId>
     <artifactId>refarch-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>refarch-backend</name>
     <description>This is the default starting project for a backend project based on the reference architecture of it@M</description>
@@ -27,7 +27,7 @@
         <url>https://github.com/it-at-m/sps.git</url>
         <connection>scm:git:https://github.com/it-at-m/sps.git</connection>
         <developerConnection>scm:git:https://github.com/it-at-m/sps.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>refarch-backend-0.0.1</tag>
     </scm>
     <developers>
         <developer>
