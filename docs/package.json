@@ -1,15 +1,22 @@
 {
-  "private": true,
+  "name": "refarch-templates-docs",
+  "version": "0.0.0",
   "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22.19 <=22"
+  },
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:serve": "vitepress serve docs",
-    "lint": "echo hallo",
-    "build": "vitepress build"
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "lint": "prettier . --check && markdownlint .",
+    "fix": "prettier . --write && markdownlint -f ."
   },
   "devDependencies": {
-    "vitepress": "latest"
+    "@muenchen/prettier-codeformat": "1.0.2",
+    "markdownlint-cli": "0.46.0",
+    "mermaid": "11.12.2",
+    "vitepress": "1.6.4",
+    "vitepress-plugin-mermaid": "2.0.17"
   }
 }
-
