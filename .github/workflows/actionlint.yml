@@ -4,10 +4,12 @@ name: Actionlint
 on:
   # Runs on pull requests
   pull_request:
+  push:
+    branches: [main]
 
 jobs:
   actionlint:
     name: Run actionlint
     runs-on: ubuntu-latest
     steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-actionlint@e012d3bda6f9d5511415e2d885f32826049284a4 # v1.0.23
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-actionlint@main
