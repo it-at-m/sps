@@ -32,7 +32,6 @@ _This text will be italic_
 - Item 2
   - Subitem 2.1
   - Subitem 2.2
-  - Subitem 2.3
 - Item 3
 
 #### Ordered List
