@@ -38,7 +38,7 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.sonatype_username }}
           CENTRAL_PASSWORD: ${{ secrets.sonatype_password }}
           GPG_PRIVATE_KEY: ${{ secrets.gpg_private_key }}
-
+          use-pr: "true"
   build-image:
     runs-on: ubuntu-latest
     needs: release-maven
