@@ -7,6 +7,9 @@ jobs:
   scan:
     name: Security check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read          # Required to checkout and read repo files
+      security-events: write  # Required to upload SARIF files to Security tab
     if: github.event_name != 'schedule' || github.ref == 'refs/heads/main'
     steps:
       - name: Run Trivy security check on repository
