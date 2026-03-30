@@ -14,3 +14,4 @@ jobs:
     steps:
       - name: Run Trivy security check on repository
         uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@212-sarif-export-and-codeql-upload-for-trivy-action
+
