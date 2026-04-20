@@ -1,4 +1,4 @@
-package de.muenchen.refarch;
+package de.muenchen.oss.refarch.eai;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,18 +24,18 @@ class EaiTest {
     @Produce(EaiRouteBuilder.DIRECT_ROUTE)
     private ProducerTemplate producer;
 
-    @EndpointInject("mock:output")
+    @EndpointInject("mock:example")
     private MockEndpoint output;
 
     @Test
-    void sendToMockTest() throws InterruptedException {
+    void givenMessage_thenSendToMockShouldSucceed() throws InterruptedException {
         final String message = "Hello Test !";
         output.expectedMessageCount(1);
 
         producer.sendBody(message);
 
         output.assertIsSatisfied();
-        assertEquals(message, output.getExchanges().get(0).getMessage().getBody(String.class));
+        assertEquals(message, output.getExchanges().getFirst().getMessage().getBody(String.class));
     }
 
 }
