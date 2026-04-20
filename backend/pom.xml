@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.9</version>
-        <relativePath />
+        <version>3.5.13</version>
+        <relativePath/>
     </parent>
 
-    <groupId>de.muenchen.refarch</groupId>
+    <groupId>de.muenchen.oss.refarch</groupId>
     <artifactId>refarch-backend</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <name>refarch-backend</name>
     <description>This is the default starting project for a backend project based on the reference architecture of it@M</description>
@@ -44,34 +44,29 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
 
-        <!-- Core Frameworks -->
-        <spring-cloud-dependencies.version>2025.0.1</spring-cloud-dependencies.version> <!-- Must match the chosen Spring Boot version -->
-
         <!-- Linting & Formatting -->
-        <spotless-maven-plugin.version>3.1.0</spotless-maven-plugin.version>
+        <spotless-maven-plugin.version>3.4.0</spotless-maven-plugin.version>
         <itm-java-codeformat.version>1.0.10</itm-java-codeformat.version>
         <pmd-maven-plugin.version>3.28.0</pmd-maven-plugin.version>
-        <spotbugs-maven-plugin.version>4.9.8.2</spotbugs-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
         <spotbugs-annotations.version>4.9.8</spotbugs-annotations.version> <!-- must match the patch version of spotbugs-maven-plugin -->
         <findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
 
         <!-- Testing -->
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <argLine /> <!-- Must be empty, definition needed for integration of Jacoco and Surefire via @{argLine} lazy property evaluation -->
+        <archunit.version>1.4.1</archunit.version>
 
         <!-- Release -->
-        <maven-release-plugin.version>3.2.0</maven-release-plugin.version>
+        <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
 
         <!-- Utility -->
-        <commons-collections4.version>4.5.0</commons-collections4.version>
-        <commons-io.version>2.21.0</commons-io.version>
-        <commons-text.version>1.14.0</commons-text.version>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <refarch-tools.version>1.2.0</refarch-tools.version>
+        <refarch-tools.version>1.2.2</refarch-tools.version>
 
         <!-- Additional required dependencies -->
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version> <!-- Needed to make MapStruct and Lombok work together -->
-        <springdoc-openapi-starter-webmvc-ui.version>2.8.15</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.17</springdoc-openapi-starter-webmvc-ui.version>
         <springdoc-openapi-maven-plugin.version>1.5</springdoc-openapi-maven-plugin.version>
         <therapi-runtime-javadoc.version>0.15.0</therapi-runtime-javadoc.version>
 
@@ -87,23 +82,29 @@
         <p2.mirror>download.eclipse.org</p2.mirror>
     </properties>
 
-
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- Import dependency management from Spring Cloud -->
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud-dependencies.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+            <!-- TEMPORARY TRANSITIVE DEPENDENCY OVERRIDES FOR SECURITY FIXES -->
+            <dependency> <!-- Added to fix CVE-2025-48924-->
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.20.0</version>
+            </dependency>
+            <dependency> <!-- Added to fix CVE-2026-29062-->
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.21.2</version>
+            </dependency>
+            <dependency> <!-- Added to fix CVE-2026-34483, CVE-2026-34486, CVE-2026-34487 -->
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>10.1.54</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
 
     <dependencies>
-
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -221,6 +222,12 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit</artifactId>
+            <version>${archunit.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Logging -->
         <dependency>
@@ -234,23 +241,6 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-
-        <!-- Apache Commons -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>${commons-collections4.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>${commons-text.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
         </dependency>
 
         <!-- Configuration Processor -->
@@ -333,7 +323,7 @@
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
                 <version>${springdoc-openapi-maven-plugin.version}</version>
                 <configuration>
-                    <apiDocsUrl>http://localhost:39146/v3/api-docs</apiDocsUrl>
+                    <apiDocsUrl>http://localhost:8086/v3/api-docs</apiDocsUrl>
                     <outputFileName>${project.name}.yaml</outputFileName>
                     <failOnError>true</failOnError>
                 </configuration>
@@ -454,7 +444,7 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>de.muenchen.refarch.tools</groupId>
+                        <groupId>de.muenchen.oss.refarch</groupId>
                         <artifactId>refarch-pmd</artifactId>
                         <version>${refarch-tools.version}</version>
                     </dependency>

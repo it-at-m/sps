@@ -1,5 +1,5 @@
 server:
-  port: 39146
+  port: 8086
 spring:
   # Spring JPA
   jpa:
@@ -25,6 +25,14 @@ spring:
           # requires client to be in audience claim, see https://www.keycloak.org/docs/latest/server_admin/#_audience_resolve
           audiences:
             - ${sso.client}
+
+management:
+  endpoints:
+    access:
+      default: unrestricted # Required for local debugging via JMX+RMI, additionally might have to set -Djava.rmi.server.hostname=localhost as JVM arguments
+  endpoint:
+    health:
+      show-details: always
 
 # Enable swagger-ui
 springdoc:
@@ -53,6 +61,6 @@ sso:
 
 refarch:
   security:
-    client-id: ${sso.client}
-    user-info-uri: ${sso.url}/auth/realms/${sso.realm}/protocol/openid-connect/userinfo
     logging-mode: all
+    client-id: ${sso.client}
+    permissions-uri: ${sso.url}/auth/realms/${sso.realm}/protocol/openid-connect/token
