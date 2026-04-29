@@ -64,4 +64,3 @@ jobs:
         with:
           artifact-name: ${{ needs.release-npm-artifact.outputs.ARTIFACT_NAME }}
           tag-name: ${{ env.app-path }}-${{ needs.release-npm-artifact.outputs.ARTIFACT_VERSION }}
-          artifact-path: ${{ env.app-path }}/dist
