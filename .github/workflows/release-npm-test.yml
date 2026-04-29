@@ -1,30 +1,12 @@
-# Workflow to release NPM-based artifacts
-name: release-npm
+name: Test release-npm
 
-on:
-  issue_comment:
-    inputs:
-      release-version:
-        type: choice
-        description: "Select version increment type (follows Semantic Versioning)"
-        required: true
-        default: patch
-        options:
-          - patch
-          - minor
-          - major
-      app-path:
-        type: choice
-        description: "Select the node service to release"
-        required: true
-        default: frontend
-        options: # Add or modify paths according to your project structure
-          - frontend
-          - webcomponent
-      skip-deployment:
-        default: false
-        type: boolean
-        description: "skip deployment to npm registry"
+on: push
+
+env:
+  release-version: "patch"
+  app-path: "frontend"
+  skip-deployment: "false"
+
 jobs:
   release-npm-artifact:
     if: ${{ github.event.issue.pull_request }}
