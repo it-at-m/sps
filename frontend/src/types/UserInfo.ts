@@ -1,63 +1,41 @@
 export interface UserInfo {
+  // scope: basic
   sub: string;
 
-  // LHM
-  displayName: string;
-  surname: string;
-  telephoneNumber: string;
+  // scope: profile
+  preferred_username: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+
+  // scope: email
   email: string;
-  username: string;
-  givenname: string;
+
+  // scope: roles
+  resource_access: Record<string, { roles: string[] }>;
+
+  // scope: phone
+  phone_number: string;
+
+  // scope: lhm-core
   department: string;
   lhmObjectID: string;
-
-  // LHM_Extended
-  preferred_username: string;
-  memberof: string[];
-  user_roles: string[];
-  authorities: string[];
 }
-
-export const USERINFO_LOCAL_DEVELOPMENT: UserInfo = {
-  sub: "",
-
-  // LHM
-  displayName: "Local Development User",
-  surname: "User",
-  telephoneNumber: "+1234567890",
-  email: "local@development.com",
-  username: "Local Development User",
-  givenname: "Local",
-  department: "Local Department",
-  lhmObjectID: "LOCAL_ID",
-
-  // LHM_Extended
-  preferred_username: "",
-  memberof: [],
-  user_roles: [
-    // todo add authorities
-  ],
-  authorities: [
-    // todo add user roles
-  ],
-};
 
 export const USERINFO_EMPTY: UserInfo = {
   sub: "",
 
-  // LHM
-  displayName: "",
-  surname: "",
-  telephoneNumber: "",
+  preferred_username: "",
+  name: "",
+  given_name: "",
+  family_name: "",
+
   email: "",
-  username: "",
-  givenname: "",
+
+  phone_number: "",
+
   department: "",
   lhmObjectID: "",
 
-  // LHM_Extended
-  preferred_username: "",
-  memberof: [],
-  user_roles: [],
-  authorities: [],
+  resource_access: {},
 };
