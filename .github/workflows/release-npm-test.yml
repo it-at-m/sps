@@ -1,6 +1,6 @@
 name: Test release-npm
 
-on: push
+on: pull_request: {}
 
 env:
   release-version: "patch"
@@ -19,7 +19,7 @@ jobs:
       ARTIFACT_VERSION: ${{ steps.release-npm-artifact.outputs.ARTIFACT_VERSION }}
     steps:
       - id: release-npm-artifact
-        uses: it-at-m/lhm_actions/action-templates/actions/action-npm-release@233_WorkflowBugs
+        uses: it-at-m/lhm_actions/action-templates/actions/action-npm-release@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
         with:
           app-path: ${{ env.app-path }}
           node-version: "24"
