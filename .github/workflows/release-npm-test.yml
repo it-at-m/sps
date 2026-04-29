@@ -21,18 +21,18 @@ jobs:
       - id: release-npm-artifact
         uses: it-at-m/lhm_actions/action-templates/actions/action-npm-release@233_WorkflowBugs
         with:
-          app-path: ${{ inputs.app-path }}
+          app-path: ${{ env.app-path }}
           node-version: "24"
-          releaseVersion: ${{ inputs.release-version }}
+          releaseVersion: ${{ env.release-version }}
           use-pr: "true"
       - id: build
         uses: it-at-m/lhm_actions/action-templates/actions/action-npm-build@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
         with:
-          app-path: ${{ inputs.app-path }}
+          app-path: ${{ env.app-path }}
           node-version: "24"
-      - if: ${{ !inputs.skip-deployment }}
+      - if: ${{ !env.skip-deployment }}
         shell: bash
-        working-directory: ./${{ inputs.app-path }}
+        working-directory: ./${{ env.app-path }}
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Centralized token in it-at-m GitHub organization
@@ -45,8 +45,8 @@ jobs:
     steps:
       - uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
         with:
-          path: ${{ inputs.app-path }}
-          image-name: ${{ inputs.app-path }}
+          path: ${{ env.app-path }}
+          image-name: ${{ env.app-path }}
           artifact-name: ${{ needs.release-npm-artifact.outputs.ARTIFACT_NAME }}
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           registry-username: ${{ github.actor }}
@@ -63,5 +63,5 @@ jobs:
       - uses: it-at-m/lhm_actions/action-templates/actions/action-create-github-release@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
         with:
           artifact-name: ${{ needs.release-npm-artifact.outputs.ARTIFACT_NAME }}
-          tag-name: ${{ inputs.app-path }}-${{ needs.release-npm-artifact.outputs.ARTIFACT_VERSION }}
-          artifact-path: ${{ inputs.app-path }}
+          tag-name: ${{ env.app-path }}-${{ needs.release-npm-artifact.outputs.ARTIFACT_VERSION }}
+          artifact-path: ${{ env.app-path }}
