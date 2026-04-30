@@ -26,6 +26,9 @@ jobs:
           node-version: "24"
           releaseVersion: ${{ env.release-version }}
           use-pr: "true"
+        env:
+          github:
+            ref_name: 224_DocuemntPermissions
       - id: build
         uses: it-at-m/lhm_actions/action-templates/actions/action-npm-build@acb09213786b76dd7aa52ec1d901390d28c60eb0 # v1.0.29
         with:
