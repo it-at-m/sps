@@ -13,7 +13,7 @@ env:
   analyze-python: false
   # Query set to use when analyzing the source code (e.g. default, security-extended, security-and-quality)
   analysis-query: security-and-quality
-
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 on:
   pull_request:
   push:
