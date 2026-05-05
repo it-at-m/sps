@@ -1,6 +1,9 @@
 # Workflow for running security scan using Trivy
 name: trivy
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   pull_request:
   schedule:
