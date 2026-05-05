@@ -1,6 +1,9 @@
 # Workflow to check health of dockercompose based development stacks
 name: dockercompose-healthcheck
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   pull_request:
 
