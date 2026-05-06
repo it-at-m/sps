@@ -19,6 +19,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     if: failure() # This job runs only if the previous job fails
+    needs: actionlint
     steps:
       - name: Notify Webex
         run: |
