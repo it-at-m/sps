@@ -18,7 +18,7 @@ jobs:
       - name: Notify Webex
         run: |
           curl -X POST -H "Content-Type: application/json" \
-            -d '{"markdown" : "${{ github.repository }} ${{ github.job }} failed"}' \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
             "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
 
 
