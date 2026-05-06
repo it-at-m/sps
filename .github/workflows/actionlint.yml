@@ -9,22 +9,23 @@ on:
     - cron: '30 5 * * 1'
       timezone: "Europe/Berlin"
 jobs:
+  notify:
+    runs-on: ubuntu-latest
+    # if: failure() # This job runs only if the previous job fails
+    #needs: actionlint
+
+    steps:
+      - name: Notify Webex
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.repository }} ${{ github.job }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
+
+
+
   actionlint:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: it-at-m/lhm_actions/action-templates/actions/action-actionlint@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
-
-
-  notify:
-    runs-on: ubuntu-latest
-    # if: failure() # This job runs only if the previous job fails
-    needs: actionlint
-
-    steps:
-      - name: Notify Webex
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"markdown" : "{{ github.repository }} {{ github.job }} failed"}' \
-            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
