@@ -2,10 +2,11 @@
 name: build
 
 on:
-  pull_request:
   push:
-    branches:
-      - "main"
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * 1'
+      timezone: "Europe/Berlin"
 
 jobs:
   build:
@@ -38,7 +39,8 @@ jobs:
         with:
           app-path: ${{ matrix.app-path }}
           java-version: "21"
-      - if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
+      - id: build
+        # if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
         uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
         with:
           path: ${{ matrix.app-path }}
@@ -48,3 +50,13 @@ jobs:
           registry-username: ${{ github.actor }}
           image-tags: |
             type=raw,value=dev
+
+  notify:
+    runs-on: ubuntu-latest
+    if: failure() # This job runs only if the previous job fails
+    steps:
+      - name: Notify Webex
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
