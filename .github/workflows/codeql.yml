@@ -15,10 +15,11 @@ env:
   analysis-query: security-and-quality
 
 on:
-  pull_request:
   push:
-    branches:
-      - "main" # Runs on main in order to keep the regular scanning by GitHub working
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * 1'
+      timezone: "Europe/Berlin"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -67,6 +68,13 @@ jobs:
           codeql-query: ${{ env.analysis-query }}
           java-version: ${{ env.java-version }}
           path: ${{ matrix.build-path }}
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
+
   codeql-javascript-typescript-vue:
     if: ${{ needs.codeql-check-changed-files.outputs.analyze-javascript-typescript-vue == 'true' && (github.ref == 'refs/heads/main' || needs.codeql-check-changed-files.outputs.javascript-typescript-vue == 'true') }}
     runs-on: ubuntu-latest
@@ -79,6 +87,13 @@ jobs:
         with:
           codeql-language: javascript-typescript
           codeql-query: ${{ env.analysis-query }}
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
+
   codeql-python:
     if: ${{ needs.codeql-check-changed-files.outputs.analyze-python == 'true' && (github.ref == 'refs/heads/main' || needs.codeql-check-changed-files.outputs.python == 'true') }}
     runs-on: ubuntu-latest
@@ -91,3 +106,9 @@ jobs:
         with:
           codeql-language: python
           codeql-query: ${{ env.analysis-query }}
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
