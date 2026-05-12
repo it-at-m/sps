@@ -2,7 +2,11 @@
 name: dockercompose-healthcheck
 
 on:
-  pull_request:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * 1'
+      timezone: "Europe/Berlin"
 
 jobs:
   dockercompose-healthcheck:
@@ -14,3 +18,13 @@ jobs:
         with:
           skip-exited: true # required for keycloakmigration init container
           compose-file-path: "./stack/"
+
+  notify:
+    runs-on: ubuntu-latest
+    if: failure() # This job runs only if the previous job fails
+    steps:
+      - name: Notify Webex
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"

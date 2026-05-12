@@ -2,8 +2,11 @@
 name: actionlint
 
 on:
-  pull_request:
-
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * 1'
+      timezone: "Europe/Berlin"
 jobs:
   actionlint:
     runs-on: ubuntu-latest
@@ -11,3 +14,10 @@ jobs:
       contents: read
     steps:
       - uses: it-at-m/lhm_actions/action-templates/actions/action-actionlint@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
+
