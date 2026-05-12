@@ -15,10 +15,11 @@ env:
   analysis-query: security-and-quality
 
 on:
-  pull_request:
   push:
-    branches:
-      - "main" # Runs on main in order to keep the regular scanning by GitHub working
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * 1'
+      timezone: "Europe/Berlin"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -38,9 +39,9 @@ jobs:
       analyze-javascript-typescript-vue: ${{ steps.analyze-flags.outputs.analyze-javascript-typescript-vue }}
       analyze-python: ${{ steps.analyze-flags.outputs.analyze-python }}
     steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-checkout@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-checkout@dev
       - id: filter
-        uses: it-at-m/lhm_actions/action-templates/actions/action-filter@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+        uses: it-at-m/lhm_actions/action-templates/actions/action-filter@dev
       - id: analyze-flags
         run: |
           {
@@ -60,13 +61,20 @@ jobs:
       matrix:
         build-path: ["./backend", "./eai"] # JSON array formatted as string, contains the paths to the java projects to build
     steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-codeql@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-codeql@dev
         with:
           codeql-language: java-kotlin
           codeql-buildmode: ${{ env.java-buildmode }}
           codeql-query: ${{ env.analysis-query }}
           java-version: ${{ env.java-version }}
           path: ${{ matrix.build-path }}
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
+
   codeql-javascript-typescript-vue:
     if: ${{ needs.codeql-check-changed-files.outputs.analyze-javascript-typescript-vue == 'true' && (github.ref == 'refs/heads/main' || needs.codeql-check-changed-files.outputs.javascript-typescript-vue == 'true') }}
     runs-on: ubuntu-latest
@@ -75,10 +83,17 @@ jobs:
       security-events: write
     needs: codeql-check-changed-files
     steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-codeql@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-codeql@dev
         with:
           codeql-language: javascript-typescript
           codeql-query: ${{ env.analysis-query }}
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
+
   codeql-python:
     if: ${{ needs.codeql-check-changed-files.outputs.analyze-python == 'true' && (github.ref == 'refs/heads/main' || needs.codeql-check-changed-files.outputs.python == 'true') }}
     runs-on: ubuntu-latest
@@ -87,7 +102,13 @@ jobs:
       security-events: write
     needs: codeql-check-changed-files
     steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-codeql@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-codeql@dev
         with:
           codeql-language: python
           codeql-query: ${{ env.analysis-query }}
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"

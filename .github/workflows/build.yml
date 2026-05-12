@@ -2,10 +2,11 @@
 name: build
 
 on:
-  pull_request:
   push:
-    branches:
-      - "main"
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * 1'
+      timezone: "Europe/Berlin"
 
 jobs:
   build:
@@ -25,21 +26,22 @@ jobs:
           - app-path: webcomponent
 
     steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-checkout@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-checkout@dev
       - id: node # required for steps.* syntax
         if: ${{ hashFiles(format('./{0}/package.json', matrix.app-path)) != '' }}
-        uses: it-at-m/lhm_actions/action-templates/actions/action-npm-build@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+        uses: it-at-m/lhm_actions/action-templates/actions/action-npm-build@dev
         with:
           app-path: ${{ matrix.app-path }}
           node-version: "24"
       - id: maven # required for steps.* syntax
         if: ${{ hashFiles(format('./{0}/pom.xml', matrix.app-path)) != '' }}
-        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-build@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-build@dev
         with:
           app-path: ${{ matrix.app-path }}
           java-version: "21"
-      - if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
-        uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+      - id: build
+        # if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
+        uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@dev
         with:
           path: ${{ matrix.app-path }}
           image-name: ${{ matrix.app-path }}
@@ -48,3 +50,10 @@ jobs:
           registry-username: ${{ github.actor }}
           image-tags: |
             type=raw,value=dev
+            
+      - name: Notify Webex
+        if: failure() # This job runs only if the previous job fails
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
+            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
