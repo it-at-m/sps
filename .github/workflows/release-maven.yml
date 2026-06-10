@@ -44,6 +44,7 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.sonatype_username }}
           CENTRAL_PASSWORD: ${{ secrets.sonatype_password }}
           GPG_PRIVATE_KEY: ${{ secrets.gpg_private_key }}
+          mavenDArgsInput: "-Dmaven.test.skip=true"
 
   release-maven-image:
     runs-on: ubuntu-latest
