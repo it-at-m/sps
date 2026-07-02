@@ -35,10 +35,17 @@ jobs:
           node-version: "24"
       - id: maven # required for steps.* syntax
         if: ${{ hashFiles(format('./{0}/pom.xml', matrix.app-path)) != '' }}
-        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-build@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
+        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-build@297-trivy-often-failing-maven-dependency-scanning
         with:
           app-path: ${{ matrix.app-path }}
           java-version: "21"
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ matrix.app-path }}
+      - id: e
+        run: |
+          echo ${{ join(steps.*.outputs.cyclone-path) }}
+          cat ${{ join(steps.*.outputs.cyclone-path) }}
       - id: build
         # if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
         uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
