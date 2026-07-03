@@ -57,6 +57,7 @@ jobs:
          trivyignores: ".trivyignore"
          output: trivy-report.json
       - id: e1
+        if: always()
         run: |
           cat trivy-report.json
       - id: build
