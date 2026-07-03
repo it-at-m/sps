@@ -39,17 +39,17 @@ jobs:
         with:
           app-path: ${{ matrix.app-path }}
           java-version: "21"
-      - uses: actions/download-artifact@v8
-        with:
-          artifact-ids: ${{ join(steps.*.outputs.cyclone-artifact-id) }}
+     #- uses: actions/download-artifact@v8
+     #   with:
+     #     artifact-ids: ${{ join(steps.*.outputs.cyclone-artifact-id) }}
       - id: e
         run: |
-          cat application.cdx.json
+          cat ${{ join(steps.*.outputs.cyclone-path) }}
       - name: Run Trivy vulnerability scanner in sbom mode
         uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@297-trivy-often-failing-maven-dependency-scanning
         with:
          scan-type: "sbom"
-         path: "application.cdx.json"
+         path: "${{ join(steps.*.outputs.cyclone-artifact-id) }}"
       - id: build
         # if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
         uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@297-trivy-often-failing-maven-dependency-scanning
