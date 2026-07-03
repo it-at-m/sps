@@ -41,7 +41,7 @@ jobs:
           java-version: "21"
       - uses: actions/download-artifact@v8
         with:
-          name: ${{ matrix.app-path }}
+          artifact-ids: ${{ join(steps.*.outputs.cyclone-artifact-id) }}
       - id: e
         run: |
           echo ${{ join(steps.*.outputs.cyclone-path) }}
