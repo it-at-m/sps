@@ -28,7 +28,8 @@ jobs:
     - run: |
         echo ${{ toJSON(steps.filter.outputs.changes) }}
   # JOB to build and test each of modified packages
-  build:
+  build: 
+    if: ${{ fromJSON(needs.changes.outputs.packages) != '[]'}} 
     needs: changes
     strategy:
       matrix:
