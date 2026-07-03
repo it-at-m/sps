@@ -35,4 +35,4 @@ jobs:
             - 'frontend/**'
     - id: a
       run: |
-        echo ${{ steps.filter.outputs }}
+        echo ${{ fromJSON(steps.filter.outputs) }}
