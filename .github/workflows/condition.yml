@@ -26,7 +26,7 @@ jobs:
           webcomponent: webcomponent
           eai: eai
     - run: |
-        echo 
+        echo ${{ toJSON(steps.filter.outputs.changes) }}
   # JOB to build and test each of modified packages
   build:
     needs: changes
