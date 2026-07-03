@@ -42,6 +42,7 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           artifact-ids: ${{ join(steps.*.outputs.cyclone-artifact-id) }}
+          path: ${{ join(steps.*.outputs.cyclone-path) }}
       - id: e
         run: |
           echo ${{ join(steps.*.outputs.cyclone-path) }}
