@@ -7,32 +7,39 @@ on:
 
 
 jobs:
-  build:
+  # JOB to run change detection
+  changes:
     runs-on: ubuntu-latest
+    # Required permissions
     permissions:
-      contents: read
-      packages: write
-    env:
-      TZ: Europe/Berlin
-   # strategy:
-    #  fail-fast: false
-    #  matrix:
-    #    include: # Add or modify paths according to your project structure
-    #      - app-path: backend
-    #     - app-path: frontend
-    #      - app-path: eai
-    #      - app-path: webcomponent
-
+      pull-requests: read
+    outputs:
+      # Expose matched filters as job 'packages' output variable
+      packages: ${{ steps.filter.outputs.changes }}
     steps:
-    - uses: actions/checkout@v6
+    # For pull requests it's not necessary to checkout the code
     - uses: dorny/paths-filter@v4
       id: filter
       with:
         filters: |
-          backend:
-            - 'backend/**'
-          frontend:
-            - 'frontend/**'
-    - id: a
-      run: |
-        echo ${{ toJSON(steps.filter) }}
+          backend: backend
+          frontend: frontend
+          webcomponent: webcomponent
+          eai: eai
+          
+  # JOB to build and test each of modified packages
+  build:
+    needs: changes
+    strategy:
+      matrix:
+        # Parse JSON array containing names of all filters matching any of changed files
+        # e.g. ['package1', 'package2'] if both package folders contains changes
+        package: ${{ fromJSON(needs.changes.outputs.packages) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@feat/trivy-allow-failure
+        with:
+          path: ${{ matrix.package }}
+
+
+
