@@ -46,6 +46,16 @@ jobs:
         run: |
           echo ${{ join(steps.*.outputs.cyclone-path) }}
           cat ${{ join(steps.*.outputs.cyclone-path) }}
+      - name: Run Trivy vulnerability scanner in repository mode
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+         scan-type: "sbom"
+         scan-ref: "${{ join(steps.*.outputs.cyclone-path) }}"
+         format: "json"
+         exit-code: "1"
+         timeout: "15m0s"
+         trivyignores: ".trivyignore"
+         output: trivy-report.json
       - id: build
         # if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
         uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@297-trivy-often-failing-maven-dependency-scanning
