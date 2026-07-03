@@ -1,0 +1,38 @@
+# Workflow for building NPM/Maven projects and Docker images
+name: build1
+
+on:
+  push:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      TZ: Europe/Berlin
+   # strategy:
+    #  fail-fast: false
+    #  matrix:
+    #    include: # Add or modify paths according to your project structure
+    #      - app-path: backend
+    #     - app-path: frontend
+    #      - app-path: eai
+    #      - app-path: webcomponent
+
+    steps:
+    - uses: actions/checkout@v6
+    - uses: dorny/paths-filter@v4
+      id: filter
+      with:
+        filters: |
+          backend:
+            - 'backend/**'
+          frontend:
+            - 'frontend/**'
+    - id: a
+      run: |
+        echo ${{ steps.filter.outputs }}
