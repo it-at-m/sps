@@ -21,6 +21,7 @@ jobs:
       id: filter
       with:
         filters: |
+          docs: docs/**
           backend: backend/**
           frontend: frontend/**
           webcomponent: webcomponent/**
