@@ -23,8 +23,8 @@ jobs:
         filters: |
           backend: backend/**
           frontend: frontend/**
-          webcomponent: webcomponent
-          eai: eai
+          webcomponent: webcomponent/**
+          eai: eai/**
     - run: |
         echo ${{ toJSON(steps.filter.outputs.changes) }}
   # JOB to build and test each of modified packages
