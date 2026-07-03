@@ -49,7 +49,7 @@ jobs:
         uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@297-trivy-often-failing-maven-dependency-scanning
         with:
          scan-type: "sbom"
-         path: "${{ join(steps.*.outputs.cyclone-artifact-id) }}"
+         path: "${{ join(steps.*.outputs.cyclone-path) }}"
       - id: build
         # if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
         uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@297-trivy-often-failing-maven-dependency-scanning
