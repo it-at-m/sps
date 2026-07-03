@@ -31,11 +31,12 @@ jobs:
   # JOB to build and test each of modified packages
   build:
     needs: changes
+    if:  ${{ needs.changes.outputs.packages != '[]' && needs.changes.outputs.packages != '' }} 
     strategy:
       matrix:
         # Parse JSON array containing names of all filters matching any of changed files
         # e.g. ['package1', 'package2'] if both package folders contains changes
-        package: ${{ fromJSON(needs.changes.outputs.packages) }}
+        package: ${{ fromJSON(needs.changes.outputs.packages) [0] && fromJSON(needs.changes.outputs.packages) || fromJSON('["skip"]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@feat/trivy-allow-failure
