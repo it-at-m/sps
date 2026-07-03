@@ -58,9 +58,3 @@ jobs:
           image-tags: |
             type=raw,value=dev
             
-      - name: Notify Webex
-        if: failure() # This job runs only if the previous job fails
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"markdown" : "${{ github.server_url }}/${{ github.repository }} ${{ github.workflow }} failed"}' \
-            "https://webexapis.com/v1/webhooks/incoming/${{ secrets.WEBEX_TOKEN }}"
