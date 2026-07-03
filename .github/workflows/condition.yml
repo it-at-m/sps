@@ -21,11 +21,12 @@ jobs:
       id: filter
       with:
         filters: |
-          backend: backend
-          frontend: frontend
+          backend: backend/**
+          frontend: frontend/**
           webcomponent: webcomponent
           eai: eai
-          
+    - run: |
+        echo 
   # JOB to build and test each of modified packages
   build:
     needs: changes
