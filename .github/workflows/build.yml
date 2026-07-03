@@ -56,6 +56,9 @@ jobs:
          timeout: "15m0s"
          trivyignores: ".trivyignore"
          output: trivy-report.json
+      - id: e1
+        run: |
+          cat trivy-report.json
       - id: build
         # if: ${{ github.ref == 'refs/heads/main' && (steps.node.outcome == 'success' || steps.maven.outcome == 'success') }}
         uses: it-at-m/lhm_actions/action-templates/actions/action-build-image@297-trivy-often-failing-maven-dependency-scanning
