@@ -5,7 +5,7 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron:  '40 * * * *'
+    - cron:  '42 * * * *'
     # cron: '30 5 * * 1'
       timezone: "Europe/Berlin"
 
