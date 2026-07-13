@@ -2,13 +2,11 @@
 name: build
 
 on:
+   
+  pull_request:
   push:
-  workflow_dispatch:
-  schedule:
-    - cron: '30 5 * * 1'
-      timezone: "Europe/Berlin"
-
-
+    branches:
+      - "main"
 jobs:
   trivy:
     runs-on: ubuntu-latest
