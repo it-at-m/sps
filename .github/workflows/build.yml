@@ -2,14 +2,50 @@
 name: build
 
 on:
+   
+  pull_request:
   push:
-  workflow_dispatch:
-  schedule:
-    - cron: '30 5 * * 1'
-      timezone: "Europe/Berlin"
-
+    branches:
+      - "main"
 jobs:
+  trivy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # Required to upload SARIF results to the GitHub Security tab
+    if: github.event_name == 'schedule' 
+    steps:
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@6db6885319cb1f85f75cd2947caa96596047711b # v1.1.0
+  # JOB to run change detection
+  changes:
+    runs-on: ubuntu-latest
+    # Required permissions
+    permissions:
+      pull-requests: read
+    if: github.event_name == 'pull_request' 
+    outputs:
+      # Expose matched filters as job 'packages' output variable
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+    # For pull requests it's not necessary to checkout the code
+    - uses: it-at-m/lhm_actions/action-templates/actions/action-filter@6db6885319cb1f85f75cd2947caa96596047711b # v1.1.0
+      id: filter
+      with:
+        filters: |
+          backend: backend/**
+          frontend: frontend/**
+          webcomponent: webcomponent/**
+          eai: eai/**
+    - run: |
+        echo ${{ toJSON(steps.filter.outputs.changes) }}
+
+
+
+
+  
   build:
+    if:  ${{ needs.changes.outputs.packages != '[]' && needs.changes.outputs.packages != '' }} 
+    needs: changes
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,11 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: # Add or modify paths according to your project structure
-          - app-path: backend
-          - app-path: frontend
-          - app-path: eai
-          - app-path: webcomponent
+        app-path: ${{ fromJSON(needs.changes.outputs.packages) [0] && fromJSON(needs.changes.outputs.packages) || fromJSON('["skip"]') }}
 
     steps:
       - uses: it-at-m/lhm_actions/action-templates/actions/action-checkout@94f7e40aa557a2790abfa98a9cc9186d260b94f8 # v1.0.27
