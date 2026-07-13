@@ -20,6 +20,7 @@ jobs:
       packages: ${{ steps.filter.outputs.changes }}
     steps:
     # For pull requests it's not necessary to checkout the code
+    - uses: actions/checkout@v6
     - uses: it-at-m/lhm_actions/action-templates/actions/action-filter@6db6885319cb1f85f75cd2947caa96596047711b # v1.1.0
       id: filter
       with:
