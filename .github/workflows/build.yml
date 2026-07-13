@@ -22,7 +22,6 @@ jobs:
     # Required permissions
     permissions:
       pull-requests: read
-    if: github.event_name == 'pull_request' 
     outputs:
       # Expose matched filters as job 'packages' output variable
       packages: ${{ steps.filter.outputs.changes }}
