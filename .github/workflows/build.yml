@@ -8,14 +8,7 @@ on:
     branches:
       - "main"
 jobs:
-  trivy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write # Required to upload SARIF results to the GitHub Security tab
-    if: github.event_name == 'schedule' 
-    steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-trivy@6db6885319cb1f85f75cd2947caa96596047711b # v1.1.0
+
   # JOB to run change detection
   changes:
     runs-on: ubuntu-latest
